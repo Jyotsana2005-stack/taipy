@@ -1,0 +1,94 @@
+import nltk
+from nltk.chat.util import Chat, reflections
+
+# Define pairs of patterns (input) and responses
+pairs = [
+    (r"hi|hello|hey", ["Hello! How can I assist you today?", "Hi there! How can I help you?"]),
+    (r"my name is (.*)", ["Hello %1, nice to meet you! How can I assist you today?"]),
+    (r"what is your name?", ["I am a healthcare chatbot. How can I help you?"]),
+    (r"tell me about (.*)", ["Here is some information about %1. Do you need more details?"]),
+    (r"what are the symptoms of (.*)", ["The common symptoms of %1 include fatigue, fever, and weight loss."]),
+    (r"(.*) headache(.*)", ["Headaches can be caused by stress, dehydration, or lack of sleep."]),
+    (r"(.*) fever(.*)", ["Fever is often caused by infections, inflammations, or certain diseases."]),
+    (r"(.*) feeling tired(.*)", ["Tiredness can result from poor sleep, stress, or a medical condition."]),
+    (r"(.*) (heart|cardio)(.*)", ["Heart conditions can include arrhythmia, heart attack, and heart disease."]),
+    (r"(.*) diabetes(.*)", ["Diabetes is a chronic condition where the body has trouble regulating blood sugar."]),
+    (r"quit|exit", ["Goodbye! Stay healthy!", "Bye! Take care."]),
+]
+
+# Create the chatbot
+def chatbot():
+    print("Hello! I am your healthcare assistant. Type 'quit' to end the conversation.")
+    chatbot = Chat(pairs, reflections)
+    chatbot.converse()
+
+if __name__ == "__main__":
+    chatbot()
+import openai
+
+openai.api_key = 'your-openai-api-key'
+
+def get_gpt3_response(query):
+    response = openai.Completion.create(
+      engine="text-davinci-003",
+      prompt=f"User is asking about health: {query}. Provide helpful, accurate medical information.",
+      max_tokens=150
+    )
+    return response.choices[0].text.strip()
+
+# Example chatbot logic using GPT-3
+def medical_chatbot():
+    print("Hello! I am a healthcare chatbot. How can I assist you? (type 'quit' to exit)")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == 'quit':
+            print("Goodbye!")
+            break
+        else:
+            response = get_gpt3_response(user_input)
+            print("Bot:", response)
+
+if __name__ == "__main__":
+    medical_chatbot()
+from flask import Flask, render_template, request
+import openai
+
+app = Flask(__name__)
+openai.api_key = 'your-openai-api-key'
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/ask', methods=['POST'])
+def ask():
+    user_input = request.form['question']
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=f"User is asking about health: {user_input}. Provide helpful, accurate medical information.",
+        max_tokens=150
+    )
+    return render_template('index.html', user_input=user_input, bot_response=response.choices[0].text.strip())
+
+if __name__ == "__main__":
+    app.run(debug=True)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Healthcare Chatbot</title>
+</head>
+<body>
+    <h1>Welcome to the Healthcare Chatbot</h1>
+    <form action="/ask" method="POST">
+        <input type="text" name="question" placeholder="Ask me a question about health..." required>
+        <button type="submit">Ask</button>
+    </form>
+
+    {% if user_input %}
+        <h3>You asked:</h3>
+        <p>{{ user_input }}</p>
+        <h3>Bot says:</h3>
+        <p>{{ bot_response }}</p>
+    {% endif %}
+</body>
+</html>
