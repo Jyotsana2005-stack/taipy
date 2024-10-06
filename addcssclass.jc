@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table with CSS Class for Headers</title>
+    <style>
+        /* Define the CSS for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Style for table headers */
+        th.header-class {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 8px;
+        }
+
+        /* Style for table cells */
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* Hover effect for rows */
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Table with CSS Class Applied to Column Headers</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="header-class">Name</th>
+                <th class="header-class">Age</th>
+                <th class="header-class">City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>John Doe</td>
+                <td>25</td>
+                <td>New York</td>
+            </tr>
+            <tr>
+                <td>Jane Smith</td>
+                <td>30</td>
+                <td>Los Angeles</td>
+            </tr>
+            <tr>
+                <td>Samuel Johnson</td>
+                <td>22</td>
+                <td>Chicago</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
+
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    data = [
+        {'name': 'John Doe', 'age': 25, 'city': 'New York'},
+        {'name': 'Jane Smith', 'age': 30, 'city': 'Los Angeles'},
+        {'name': 'Samuel Johnson', 'age': 22, 'city': 'Chicago'}
+    ]
+    return render_template('index.html', data=data)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Table with CSS Class in Header</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th.header-class {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 8px;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Dynamic Table with CSS Class in Header</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="header-class">Name</th>
+                <th class="header-class">Age</th>
+                <th class="header-class">City</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.age }}</td>
+                <td>{{ row.city }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
